@@ -4,7 +4,7 @@ void main() {
   runApp(const MeuApp());
 }
 
-// Classe MeuApp - Ponto de início preparação dos widgets
+// Classe MeuApp - Ponto de inicio de preparação dos Widgets
 class MeuApp extends StatelessWidget {
   const MeuApp({super.key});
 
@@ -31,13 +31,15 @@ class AgendamentoEventoTela extends StatefulWidget {
 }
 
 class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
-  // --- 1. Valores Padrão (para reset)
+  // --- 1. Valores Padrão (para reset) ---
   static final DateTime _dataPadrao = DateTime.now();
-  static final TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
+  static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
+  static const String _tipoPadrao = 'Aniversário';
 
   // --- 2. Variáveis de Estado ---
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
+  late String _tipoEventoSelecionado;
 
   @override
   void initState() {
@@ -49,25 +51,58 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     setState(() {
       _dataSelecionada = _dataPadrao;
       _horarioSelecionado = _horarioPadrao;
+      _tipoEventoSelecionado = _tipoPadrao;
     });
-    print('[DEBUG] Formulário resetado para os valores padrão.');
+    print('[DEBUG] Formulario resetado para os valores padrao.');
   }
 
   void _salvarFormulario() {
-    print('=============================');
-    print('    RESUMO DO AGENDAMENTO    ');
-    print('=============================');
+    print('========================================');
+    print('*         RESUMO DO AGENDAMENTO        *');
+    print('========================================');
     print(
       'Data: ${_dataSelecionada.day}/${_dataSelecionada.month}/${_dataSelecionada.year}',
     );
     print('Horário: ${_horarioSelecionado.format(context)}');
-    print('-----------------------------');
+    print('Tipo de Evento: $_tipoEventoSelecionado');
+    print('========================================');
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Evento salvo com sucesso! Veja os logs no console.'),
       ),
     );
+  }
+
+  // --- Funções Auxiliares para Pickers ---
+  Future<void> _selecionarData(BuildContext context) async {
+    final DateTime? data = await showDatePicker(
+      context: context,
+      initialDate: _dataSelecionada,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2030),
+    );
+    if (data != null && data != _dataSelecionada) {
+      setState(() {
+        _dataSelecionada = data;
+      });
+      print('[DEBUG - DatePicker] Data selecionada: $data');
+    }
+  }
+
+  Future<void> _selecionarHorario(BuildContext context) async {
+    final TimeOfDay? horario = await showTimePicker(
+      context: context,
+      initialTime: _horarioSelecionado,
+    );
+    if (horario != null && horario != _horarioSelecionado) {
+      setState(() {
+        _horarioSelecionado = horario;
+      });
+      print(
+        '[DEBUG - TimePicker] Horário selecionado: ${_horarioSelecionado.format(context)}',
+      );
+    }
   }
 
   @override
@@ -84,7 +119,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
           children: [
             // --- 1. DatePicker & 2. TimePicker ---
             Text(
-              'Data e Horário:',
+              'Data e Horário',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -108,6 +143,39 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   ),
                 ),
               ],
+            ),
+            const Divider(height: 32),
+
+            // --- 3. Menu (DropdownButton) ---
+            Text(
+              'Tipo de Evento',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              initialValue: _tipoEventoSelecionado,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+              items: ['Aniversário', 'Casamento', 'Corporativo', 'Outro']
+                  .map(
+                    (tipo) => DropdownMenuItem(value: tipo, child: Text(tipo)),
+                  )
+                  .toList(),
+              onChanged: (novoValor) {
+                if (novoValor != null) {
+                  setState(() {
+                    _tipoEventoSelecionado = novoValor;
+                  });
+                  print(
+                    '[DEBUG - Menu] Tipo de evento selecionado: $novoValor',
+                  );
+                }
+              },
             ),
             const Divider(height: 32),
           ],
