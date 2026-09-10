@@ -1,3 +1,5 @@
-# tutorial11
+# Material Selection Pack
 
-A new Flutter project.
+Aplicativo desenvolvido em Flutter para seleção e gerenciamento de materiais e informações relacionadas a eventos.
+
+## Resumo do Desenvolvimento
