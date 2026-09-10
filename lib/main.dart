@@ -40,6 +40,13 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static const double _convidadosPadrao = 50.0;
   static const Visibilidade _visibilidadePadrao = .private;
 
+  static const Map<String, bool> _servicosPadrao = {
+    'Buffet' : false,
+    'Fotógrafo' : false,
+    'Decoração' : false,
+    'DJ' : false,
+  }
+
   // --- 2. Variáveis de Estado ---
   late DateTime _dataSelecionada;
 
@@ -47,6 +54,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   late String _tipoEventoSelecionado;
   late double _quantidadeConvidados;
   late Visibilidade _visibilidadeSelecionada;
+  late Map<String, bool> _servicoSelecionados;
 
   @override
   void initState() {
@@ -61,6 +69,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _tipoEventoSelecionado = _tipoPadrao;
       _quantidadeConvidados = _convidadosPadrao;
       _visibilidadeSelecionada = _visibilidadePadrao;
+      _servicoSelecionados = Map<String, bool>.from(_servicosPadrao);
     });
     print('[DEBUG] Formulario resetado para os valores padrao.');
   }
@@ -76,6 +85,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     print('Tipo de Evento: $_tipoEventoSelecionado');
     print('Estimativa de Convidados: ${_quantidadeConvidados.round()}');
     print('Visibilidade: $_visibilidadeSelecionada');
+    print('Serviços Adicionais: $_servicoSelecionados');
     print('========================================');
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -240,24 +250,48 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   ListTile(
                     title: Text('Público'),
                     leading: Radio<Visibilidade>(value: Visibilidade.public),
-                  ), // ListTile
+                  ), 
 
                   ListTile(
                     title: Text('Privado'),
                     leading: Radio<Visibilidade>(value: Visibilidade.private),
-                  ), // ListTile
+                  ), 
 
                   ListTile(
                     title: Text('Apenas Convidados'),
                     leading: Radio<Visibilidade>(value: Visibilidade.vip),
-                  ), // ListTile
+                  ), 
                 ],
-              ), // Column
-            ), // RadioGroup
+              ), 
+            ), 
             const Divider(height: 32),
-            ], // Column
 
-          ],
+            // --- 6. Checkbox ---
+            Text(
+              'Serviços Adicionais',
+              style: Theme.of(context).textTheme.titleMedium,
+            ), // Text
+            Column(
+              children: _servicoSelecionados.keys.map((servico) {
+                return CheckboxListTile(
+                  dense: true,
+                  title: Text(servico),
+                  value: _servicoSelecionados[servico],
+                  onChanged: (bool? marcado) {
+                    setState(() {
+                      _servicosSelecioandos[servico] = marcado ?? false;
+                    });
+                    print(
+                      'DEBUG - Checkbox) Serviço "$servico" alterado para: $marcado',
+                    );
+                  },
+                );
+              }).toList(),
+            ), // Column
+            const Divider(height: 32),
+
+
+            ], 
         ),
       ),
     );
