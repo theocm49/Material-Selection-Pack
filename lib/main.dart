@@ -41,11 +41,20 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   static const Visibilidade _visibilidadePadrao = .private;
 
   static const Map<String, bool> _servicosPadrao = {
-    'Buffet' : false,
-    'Fotógrafo' : false,
-    'Decoração' : false,
-    'DJ' : false,
-  }
+    'Buffet': false,
+    'Fotógrafo': false,
+    'Decoração': false,
+    'DJ': false,
+  };
+
+  static const List<String> _tagsDisponiveis = [
+    'Vegetariano',
+    'Sem Glúten',
+    'Sem Lactose',
+    'Vegano',
+  ];
+
+  static const List<String> _tagsPadrao = [];
 
   // --- 2. Variáveis de Estado ---
   late DateTime _dataSelecionada;
@@ -55,6 +64,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   late double _quantidadeConvidados;
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicoSelecionados;
+  late List<String> _tagsSelecionadas;
 
   @override
   void initState() {
@@ -70,6 +80,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _quantidadeConvidados = _convidadosPadrao;
       _visibilidadeSelecionada = _visibilidadePadrao;
       _servicoSelecionados = Map<String, bool>.from(_servicosPadrao);
+      _tagsSelecionadas = List<String>.from(_tagsPadrao);
     });
     print('[DEBUG] Formulario resetado para os valores padrao.');
   }
@@ -86,6 +97,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     print('Estimativa de Convidados: ${_quantidadeConvidados.round()}');
     print('Visibilidade: $_visibilidadeSelecionada');
     print('Serviços Adicionais: $_servicoSelecionados');
+    print('Restrição Alimentares (Tags): $_tagsSelecionadas')
     print('========================================');
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -250,20 +262,20 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   ListTile(
                     title: Text('Público'),
                     leading: Radio<Visibilidade>(value: Visibilidade.public),
-                  ), 
+                  ),
 
                   ListTile(
                     title: Text('Privado'),
                     leading: Radio<Visibilidade>(value: Visibilidade.private),
-                  ), 
+                  ),
 
                   ListTile(
                     title: Text('Apenas Convidados'),
                     leading: Radio<Visibilidade>(value: Visibilidade.vip),
-                  ), 
+                  ),
                 ],
-              ), 
-            ), 
+              ),
+            ),
             const Divider(height: 32),
 
             // --- 6. Checkbox ---
@@ -289,9 +301,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
               }).toList(),
             ), // Column
             const Divider(height: 32),
-
-
-            ], 
+          ],
         ),
       ),
     );
