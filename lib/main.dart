@@ -55,6 +55,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   ];
 
   static const List<String> _tagsPadrao = [];
+  static const bool _lembretePadrao = true;
 
   // --- 2. Variáveis de Estado ---
   late DateTime _dataSelecionada;
@@ -65,6 +66,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicoSelecionados;
   late List<String> _tagsSelecionadas;
+  late bool _notificacaoAtiva;
 
   @override
   void initState() {
@@ -81,6 +83,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _visibilidadeSelecionada = _visibilidadePadrao;
       _servicoSelecionados = Map<String, bool>.from(_servicosPadrao);
       _tagsSelecionadas = List<String>.from(_tagsPadrao);
+      _notificacaoAtiva = _lembretePadrao;
     });
     print('[DEBUG] Formulario resetado para os valores padrao.');
   }
@@ -97,7 +100,8 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     print('Estimativa de Convidados: ${_quantidadeConvidados.round()}');
     print('Visibilidade: $_visibilidadeSelecionada');
     print('Serviços Adicionais: $_servicoSelecionados');
-    print('Restrição Alimentares (Tags): $_tagsSelecionadas')
+    print('Restrição Alimentares (Tags): $_tagsSelecionadas');
+    print('Lembrete Automático: $_notificacaoAtiva');
     print('========================================');
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -301,6 +305,26 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
               }).toList(),
             ), // Column
             const Divider(height: 32),
+
+            // --- 8. Switch ---
+            SwitchListTile(
+              title: const Text('Enviar Lembrete Automático'),
+              subtitle: const Text(
+                'Notificar convidados 24 horas antes do evento',
+              ), 
+              value: _notificacaoAtiva,
+              onChanged: (bool ativo) {
+                setState(() {
+                  _notificacaoAtiva = ativo;
+                });
+                print(
+                  '[DEBUG - Switch] Notificação automática alterada para: $ativo',
+                );
+              },
+            ), 
+            const SizedBox(height: 24),
+            ],
+
           ],
         ),
       ),
